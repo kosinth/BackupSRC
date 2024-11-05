@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <table border=1 id="my-table">
+        <tr>
+          <td>Row1-Column1 <input type="text" value=" aa "></td>
+          <td>Row1-Column2</td>
+          <td>Row1-Column3</td>
+          <td>Row1-Column4</td>
+          <td>Row1-Column5</td>
+        </tr>
+        <tr>
+          <td>Row2-Column1</td>
+          <td>Row2-Column2</td>
+          <td>Row2-Column3</td>
+          <td>Row2-Column4</td>
+          <td>Row2-Column5</td>
+        </tr>
+        <tr>
+          <td>Row3-Column1</td>
+          <td>Row3-Column2</td>
+          <td>Row3-Column3</td>
+          <td>Row3-Column4</td>
+          <td>Row3-Column5</td>
+        </tr>
+      </table>
+      <br>
+      <span style="font-weight: bold">Desired Output:</span> "Row1-Column1 Row1-Column2, Row2-Column1 Row2-Column2, Row3-Column1 Row3-Column2"
+      <br>
+      <br>
+      <span>Output:</span> <div id="output"></div>
+
+    <button onclick='execute()'>Execute</button>
+</body>
+<script>
+    function execute() {
+
+
+    var table = document.querySelector('#my-table')
+	var trs   = table.querySelectorAll('tr')
+    var outputDiv = document.querySelector('#output') 
+    var tds = []
+    var i, j
+    var output = ''; 
+    
+  for (i = 0; i < trs.length; i++) {
+  	tds = trs[i].querySelectorAll('td');
+    output += "Row #" + (i + 1) + "<br>";
+    for (j = 0; j < tds.length; j++) {
+      output += tds[j].innerText + ' ' +trs[i].cells[j].querySelector("input").value ;
+      
+    }
+    output += '<br>-----------------<br>';
+  }
+
+  //row.cells[2].querySelector("input").value)
+  
+  outputDiv.innerHTML = output;
+
+
+    }
+
+</script>
+</html>

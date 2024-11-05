@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        @font-face {
+            font-family:'kanit';
+            src: url('./Kanit/Kanit-Regular.ttf');
+        }       
+        body{
+            font-family: 'kanit';
+        }
+
+
+        .box { 
+            width: 200px; height: 40px;
+            font-size: medium;
+        }
+
+    </style>
+
+</head>
+<body>
+    <h1> Register  Form</h1>
+
+    <span>ชื่อจริง </span><input type="text"  id = "fname" name="fname" value="kosin"> 
+    <span>นานสกุล </span><input type="text" id ="lname" name="lname" value="buaung">
+    <div>
+       อายุ  <input type="number" name="age" min=0 max=100> 
+       <span> ภาษาโปรแกรมที่ชอบ : 
+        <select name="slect_T" id="slect_T"  class="box">
+            <option value="Java"> Java</option>
+            <option value="PHP"> PHP</option>
+            <option value="Java Script"> Java Script</option>
+            <option value="C++"> C++</option>
+        </select>
+        </span>
+       
+        <div>เพศ
+            <div>
+                <input type="radio" name="sex" value="ชาย" checked="true" onchange="changeGender()"> ชาย            </div>
+            <div>
+                <input type="radio" name="sex" value="หญิง" onchange="changeGender()"> หญิง
+            </div>
+            <div>
+                <input type="radio" name="sex" value="ไม่ระบุ" onchange="changeGender()"> ไม่ระบุ
+            </div>
+        </div>
+        <div>สิ่งที่สนใจ
+            <div>
+                <input type="checkbox" name="interest" value="football" > football
+            </div>
+            <div>
+                <input type="checkbox" name="interest" value="game" > game
+            </div>
+            <div>
+                <input type="checkbox" name="interest" value="การเมือง" > การเมือง
+            </div>
+        </div>
+    </div>
+     <div>
+        <textarea name="address"  value=""></textarea>
+     </div>
+     <br>
+     <div>
+        การส่งข้อมูล
+     </div>
+     
+     
+     <div>
+        <input type="submit" value="ส่งข้อมุล" onclick="onclicksubmit()"/> 
+     </div>
+      
+      <div id="content">
+      </div>
+     
+     <div>
+        <a href="#">ส่งข้อมุล </a>
+     </div>
+
+     
+
+<script>
+    firstname = document.getElementById('fname')
+    console.log('hello world ')
+
+    let domSelectInputfname = document.querySelector('input[name=fname]')
+    let domSelectInputlanme = document.querySelector('input[name=lname]')
+    console.log(domSelectInputfname.value ,domSelectInputlanme.value)
+     
+    function changeGender(){
+
+        let checkgender = document.querySelectorAll('input[name=sex]')
+        let result =""
+        for(let i=0;i<checkgender.length;i++){
+            if(checkgender[i].checked){
+                result =checkgender[i].value
+            }
+        }
+        console.log(result)
+    }
+
+   function getSelectedOptions(select) {
+        let result = [];
+        let options = select.getElementsByTagName('option');
+        for (var i = 0; i < options.length; i++) {
+            if (options[i].selected){
+                result.push(options[i]);
+                console.log('select ....: ',options[i])
+            }    
+        };
+        return result;
+    }
+
+
+    function onclicksubmit(){
+
+
+    let checkboxinput = document.querySelectorAll('input[name=interest]')
+    let rdata = ""
+    let dataObj=[] 
+    let resulthtml = '<ul>'
+    for (let i=0;i<checkboxinput.length;i++){
+    if(checkboxinput[i].checked){
+        rdata =checkboxinput[i].value
+        resulthtml += '<li>' + checkboxinput[i].value + '</li>'
+        dataObj.push(checkboxinput[i].value)
+    }
+    }
+    console.log(rdata)
+    resulthtml += '</ul>'
+    let getcontent = document.getElementById('content')
+    getcontent.innerHTML = resulthtml
+
+    let fnameDom = document.querySelector('input[name=fname]')
+    let lnameDom = document.querySelector('input[name=lname]')
+    let ageDom = document.querySelector('input[name=age]')
+
+
+    let e = document.getElementById("slect_T");
+    let programDom = e.options[e.selectedIndex].text;
+    console.log('  TEst',  programDom )
+    e = document.getElementById("slect_T");
+        function onChange() {
+            programDom = e.options[e.selectedIndex].text;
+            console.log( programDom);
+        }
+    e.onchange = onChange;
+    onChange();
+
+    let sexDom = document.querySelector('input[name=sex]:checked')
+    let addrDom = document.querySelector('textarea[name=address]')
+
+    let userData = {
+        fname: fnameDom.value,
+        lname: lnameDom.value,
+        age: ageDom.value,
+        program: programDom,
+        sex: sexDom.value,
+        interest: dataObj,
+        adrr: addrDom.value
+    }
+    
+    console.log('send Data : ',userData)
+
+    alert('OK .. ข้อมูลครบ...')
+
+}
+
+</script>
+
+</body>
+</html>
