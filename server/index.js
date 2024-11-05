@@ -77,9 +77,8 @@ app.get('/user/:id/:name',(req,res) =>{
 app.post('/user',(req,res)=>{
     try{
         let user = req.body
-        console.log(' HI ok  ... ',user)
+        console.log(user)
         res.json({
-            message : " ok ",
             user : user
         })
     

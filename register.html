@@ -82,6 +82,10 @@
         <a href="#">ส่งข้อมุล </a>
      </div>
 
+      <div id="resdata">
+
+
+      </div>
      
 
 <script>
@@ -166,8 +170,18 @@
         
         console.log('send Data : ',userData)
         const response = await axios.post('http://localhost:8002/user',userData)
-        console.log('response : ' ,response.data)
 
+        // console.log('response : ', "  ===>"+response.data.user.fname)
+        let txtmsg = response.data.user.fname 
+              + " " +response.data.user.lname 
+              + " " +response.data.user.adrr 
+              + " " +response.data.user.age
+              + " " +response.data.user.interest
+              + " " +response.data.user.program
+              + " " +response.data.user.sex
+
+
+        document.getElementById('resdata').innerHTML = txtmsg
     }
 
 </script>
