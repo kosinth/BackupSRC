@@ -2,9 +2,11 @@ const express = require('express')
 const app = express()
 const bodyparser = require('body-parser')
 const mysql = require('mysql2/promise')
+const cors = require('cors');
 //app use port
 const port = 8002
 app.use(bodyparser.json())
+app.use(cors())
 
 // get mysql DB
 let connDb = 'TestDB';
@@ -73,12 +75,21 @@ app.get('/user/:id/:name',(req,res) =>{
 })
 
 app.post('/user',(req,res)=>{
-    let user = req.body
-    console.log(user)
-    res.json({
-        message : " ok ",
-        user : user
-    })
+    try{
+        let user = req.body
+        console.log(' HI ok  ... ',user)
+        res.json({
+            message : " ok ",
+            user : user
+        })
+    
+    }catch(err){
+        res.json({
+            error : " error ",
+            message : err.message
+        })
+
+    }
  
 })
 

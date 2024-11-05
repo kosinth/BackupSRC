@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> <!-- เพิ่ม script axios เข้ามา-->
     <style>
         @font-face {
             font-family:'kanit';
@@ -21,7 +22,7 @@
         }
 
     </style>
-
+ 
 </head>
 <body>
     <h1> Register  Form</h1>
@@ -116,61 +117,61 @@
     }
 
 
-    function onclicksubmit(){
+    const onclicksubmit = async() =>{
 
-
-    let checkboxinput = document.querySelectorAll('input[name=interest]')
-    let rdata = ""
-    let dataObj=[] 
-    let resulthtml = '<ul>'
-    for (let i=0;i<checkboxinput.length;i++){
-    if(checkboxinput[i].checked){
-        rdata =checkboxinput[i].value
-        resulthtml += '<li>' + checkboxinput[i].value + '</li>'
-        dataObj.push(checkboxinput[i].value)
-    }
-    }
-    console.log(rdata)
-    resulthtml += '</ul>'
-    let getcontent = document.getElementById('content')
-    getcontent.innerHTML = resulthtml
-
-    let fnameDom = document.querySelector('input[name=fname]')
-    let lnameDom = document.querySelector('input[name=lname]')
-    let ageDom = document.querySelector('input[name=age]')
-
-
-    let e = document.getElementById("slect_T");
-    let programDom = e.options[e.selectedIndex].text;
-    console.log('  TEst',  programDom )
-    e = document.getElementById("slect_T");
-        function onChange() {
-            programDom = e.options[e.selectedIndex].text;
-            console.log( programDom);
+        let checkboxinput = document.querySelectorAll('input[name=interest]')
+        let rdata = ""
+        let dataObj=[] 
+        let resulthtml = '<ul>'
+        for (let i=0;i<checkboxinput.length;i++){
+        if(checkboxinput[i].checked){
+            rdata =checkboxinput[i].value
+            resulthtml += '<li>' + checkboxinput[i].value + '</li>'
+            dataObj.push(checkboxinput[i].value)
         }
-    e.onchange = onChange;
-    onChange();
+        }
+        console.log(rdata)
+        resulthtml += '</ul>'
+        let getcontent = document.getElementById('content')
+        getcontent.innerHTML = resulthtml
 
-    let sexDom = document.querySelector('input[name=sex]:checked')
-    let addrDom = document.querySelector('textarea[name=address]')
+        let fnameDom = document.querySelector('input[name=fname]')
+        let lnameDom = document.querySelector('input[name=lname]')
+        let ageDom = document.querySelector('input[name=age]')
 
-    let userData = {
-        fname: fnameDom.value,
-        lname: lnameDom.value,
-        age: ageDom.value,
-        program: programDom,
-        sex: sexDom.value,
-        interest: dataObj,
-        adrr: addrDom.value
+
+        let e = document.getElementById("slect_T");
+        let programDom = e.options[e.selectedIndex].text;
+        console.log('  TEst',  programDom )
+        e = document.getElementById("slect_T");
+            function onChange() {
+                programDom = e.options[e.selectedIndex].text;
+                console.log( programDom);
+            }
+        e.onchange = onChange;
+        onChange();
+
+        let sexDom = document.querySelector('input[name=sex]:checked')
+        let addrDom = document.querySelector('textarea[name=address]')
+
+        let userData = {
+            fname: fnameDom.value,
+            lname: lnameDom.value,
+            age: ageDom.value,
+            program: programDom,
+            sex: sexDom.value,
+            interest: dataObj,
+            adrr: addrDom.value
+        }
+        
+        console.log('send Data : ',userData)
+        const response = await axios.post('http://localhost:8002/user',userData)
+        console.log('response : ' ,response.data)
+
     }
-    
-    console.log('send Data : ',userData)
-
-    alert('OK .. ข้อมูลครบ...')
-
-}
 
 </script>
+
 
 </body>
 </html>
