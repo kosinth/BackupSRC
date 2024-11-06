@@ -12,6 +12,7 @@ app.use(cors())
 let connDb = 'TestDB';
 let pathparam = 'testdb-list'
 
+// Get all user
 app.get(`/${pathparam}`, async(req,res)=>{
     //MySql connect 
     //User Name ; Root 
@@ -32,9 +33,10 @@ app.get(`/${pathparam}`, async(req,res)=>{
         */
         const results = await conn.query('SELECT *,DATE_FORMAT(dt_timestamp, "%d/%m/%Y") AS "dt_name" FROM Register')
         res.json(results[0])
+        console.log(results)
 
     }catch(err){
-        console.error('Error : api path : /testdb' ,err.message)
+        console.error('Error : api path get[/testdb]' ,err.message)
         res.status(500).json({
             err : 'มีข้อผิดพลาด : ',
             message : err.message
@@ -43,25 +45,40 @@ app.get(`/${pathparam}`, async(req,res)=>{
 
 })
 
-app.get('/',(req,res)=>{
-    //send json
-    let users ={ 
-        id : "1001",
-        name : "kosinth buaung",
-        address : " 12/8 kaotaleang sukhothai 64120"
-    }
-    //res.send('Hello world ... 555')
-     //send json
-    res.json(users);
-})
-
-app.get('/user/:id',(req,res) =>{
-        let user = req.params.id
-        res.json({
-            message : "user Id",
-            user : user
+// Get by id
+app.get('/user/:id',async(req,res) =>{
+        
+    try{
+        let id = req.params.id
+        const conn = await mysql.createConnection({
+            host : 'localhost',
+            user : 'root',
+            password : 'Kosinth@1001',
+            database : connDb
+            //port : '3306'
         })
+        const results = await conn.query('SELECT * FROM  Register WHERE ID = ?',id)
+        //console.log('result : ',results[0].length)
+        if (results[0].length>0){
+            res.json({ 
+                user : 'Get ID Ok',
+                data : results[0]
+            })
+        }else{
+            res.status(404).json({ 
+                user : 'ไม่พบข่อมูล..',
+                data : results[0]
+            })
+        }
 
+    
+    }catch(err){
+        res.status(500).json({
+            error : " error ",
+            message : err.message
+        })
+        console.error('Error,index.js,path api get[/user/:id] =>',err.message)
+    }
 })
 
 app.get('/user/:id/:name',(req,res) =>{
@@ -73,7 +90,9 @@ app.get('/user/:id/:name',(req,res) =>{
         name : name
     })
 })
-// insert
+
+
+// Insert
 app.post('/user',async(req,res)=>{
     try{
         const conn = await mysql.createConnection({
@@ -97,9 +116,73 @@ app.post('/user',async(req,res)=>{
             error : " error ",
             message : err.message
         })
+        console.error('Error,index.js,path api post[/user] =>',err.message)
     }
  
 })
+
+//Update
+app.put('/user/:id',async(req,res)=>{
+    try{
+        let id = req.params.id
+        let updateUser = req.body
+        const conn = await mysql.createConnection({
+            host : 'localhost',
+            user : 'root',
+            password : 'Kosinth@1001',
+            database : connDb
+            //port : '3306'
+        })
+        let user = req.body
+        const results = await conn.query(
+            'UPDATE Register SET ? WHERE id = ? ',
+            [updateUser,id]
+        )
+        console.log('result : ',results)
+
+        res.json({
+            user : 'update Ok',
+            data : results[0]
+        })
+    
+    }catch(err){
+        res.status(500).json({
+            error : " error ",
+            message : err.message
+        })
+        console.error('Error,index.js,path api put[/user/:id] =>',err.message)
+    }
+})
+    
+// Delete
+app.delete('/user/:id',async(req,res)=>{
+
+    try{
+        let id = req.params.id
+        const conn = await mysql.createConnection({
+            host : 'localhost',
+            user : 'root',
+            password : 'Kosinth@1001',
+            database : connDb
+            //port : '3306'
+        })
+        const results = await conn.query('DELETE FROM Register WHERE ID = ?',id)
+        //console.log('result : ',results[0].length)
+        res.json({
+            user : 'delete Ok',
+            data : results[0]
+        })
+    
+    }catch(err){
+        res.status(500).json({
+            error : " error ",
+            message : err.message
+        })
+        console.error('Error,index.js,path api delete[/user/:id] =>',err.message)
+    }
+
+})
+
 
 app.listen(port,(req,res) =>{
     console.log(`server is running port ${port}`)
