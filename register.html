@@ -21,6 +21,26 @@
             font-size: medium;
         }
 
+    
+        /*  css send / validate Data
+        */
+        .message{
+            background-color:lightslategray;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: none;
+
+        }
+        .message.success{
+            background-color: green;
+            display: block;
+        }
+
+        .message.danger{
+            background-color: red;
+            display: block;
+        }
+    
     </style>
  
 </head>
@@ -83,6 +103,11 @@
      </div>
 
       <div id="resdata">
+
+
+      </div>
+
+      <div id="message" class="message ">
 
 
       </div>
@@ -157,31 +182,48 @@
 
         let sexDom = document.querySelector('input[name=sex]:checked')
         let addrDom = document.querySelector('textarea[name=address]')
+        let messageDom = document.getElementById('message')
+
+
+
+
 
         let userData = {
-            fname: fnameDom.value,
-            lname: lnameDom.value,
-            age: ageDom.value,
-            program: programDom,
-            sex: sexDom.value,
-            interest: dataObj,
-            adrr: addrDom.value
+            Lname: lnameDom.value,
+            Fname: fnameDom.value,
+            Age: ageDom.value,
+            Program: programDom,
+            Sex: sexDom.value,
+            Interest: dataObj,
+            Address: addrDom.value
         }
         
-        console.log('send Data : ',userData)
-        const response = await axios.post('http://localhost:8002/user',userData)
+        try{
 
-        // console.log('response : ', "  ===>"+response.data.user.fname)
-        let txtmsg = response.data.user.fname 
-              + " " +response.data.user.lname 
-              + " " +response.data.user.adrr 
-              + " " +response.data.user.age
-              + " " +response.data.user.interest
-              + " " +response.data.user.program
-              + " " +response.data.user.sex
+            console.log('send Data : ',userData)
+            const response = await axios.post('http://localhost:8002/user',userData)
+            
+            messageDom.innerText = "บันทึกข้อมูลเรียบร้อย"
+            messageDom.className = 'message success'
+            
+            // console.log('response : ', "  ===>"+response.data.user.fname)
+            let txtmsg = response.data.user.fname 
+                + " " +response.data.user.lname 
+                + " " +response.data.user.adrr 
+                + " " +response.data.user.age
+                + " " +response.data.user.interest
+                + " " +response.data.user.program
+                + " " +response.data.user.sex
+            document.getElementById('resdata').innerHTML = txtmsg
 
+        }catch(err){
 
-        document.getElementById('resdata').innerHTML = txtmsg
+            messageDom.innerText = "บันทึกข้อมูลมีปัญหา"
+            messageDom.className = 'message danger'
+
+            
+        }
+
     }
 
 </script>

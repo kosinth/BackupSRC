@@ -73,21 +73,30 @@ app.get('/user/:id/:name',(req,res) =>{
         name : name
     })
 })
-
-app.post('/user',(req,res)=>{
+// insert
+app.post('/user',async(req,res)=>{
     try{
+        const conn = await mysql.createConnection({
+            host : 'localhost',
+            user : 'root',
+            password : 'Kosinth@1001',
+            database : connDb
+            //port : '3306'
+        })
         let user = req.body
-        console.log(user)
+        const results = await conn.query('INSERT INTO Register SET ?',user)
+        console.log('result : ',results)
+
         res.json({
-            user : user
+            user : 'insert Ok',
+            data : results[0]
         })
     
     }catch(err){
-        res.json({
+        res.status(500).json({
             error : " error ",
             message : err.message
         })
-
     }
  
 })
