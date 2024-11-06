@@ -5,6 +5,7 @@ const mysql = require('mysql2/promise')
 const cors = require('cors');
 //app use port
 const port = 8002
+
 app.use(bodyparser.json())
 app.use(cors())
 
