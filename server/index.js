@@ -34,7 +34,7 @@ app.get(`/${pathparam}`, async(req,res)=>{
         */
         const results = await conn.query('SELECT *,DATE_FORMAT(dt_timestamp, "%d/%m/%Y") AS "dt_name" FROM Register')
         res.json(results[0])
-        console.log(results)
+        //console.log(results)
 
     }catch(err){
         console.error('Error : api path get[/testdb]' ,err.message)
@@ -184,7 +184,7 @@ app.delete('/user/:id',async(req,res)=>{
 
 })
 
-
+//----> app running <----//
 app.listen(port,(req,res) =>{
     console.log(`server is running port ${port}`)
 })
