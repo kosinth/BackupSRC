@@ -47,8 +47,8 @@
 <body>
     <h1> Register  Form</h1>
 
-    <span>ชื่อจริง </span><input type="text"  id = "fname" name="fname" value="kosin"> 
-    <span>นานสกุล </span><input type="text" id ="lname" name="lname" value="buaung">
+    <span>ชื่อจริง </span><input type="text"  id = "fname" name="fname" value=""> 
+    <span>นานสกุล </span><input type="text" id ="lname" name="lname" value="">
     <div>
        อายุ  <input type="number" name="age" min=0 max=100> 
        <span> ภาษาโปรแกรมที่ชอบ : 
@@ -98,10 +98,7 @@
       <div id="content">
       </div>
      
-     <div>
-        <a href="#">ส่งข้อมุล </a>
-     </div>
-
+     
       <div id="resdata">
 
 
@@ -114,6 +111,9 @@
      
 
 <script>
+    
+    
+    
     firstname = document.getElementById('fname')
     console.log('hello world ')
 
@@ -150,16 +150,17 @@
 
         let checkboxinput = document.querySelectorAll('input[name=interest]')
         let rdata = ""
-        let dataObj=[] 
+        let dataObj="" 
         let resulthtml = '<ul>'
         for (let i=0;i<checkboxinput.length;i++){
         if(checkboxinput[i].checked){
             rdata =checkboxinput[i].value
             resulthtml += '<li>' + checkboxinput[i].value + '</li>'
-            dataObj.push(checkboxinput[i].value)
+            //dataObj.push(checkboxinput[i].value)
+            dataObj += checkboxinput[i].value +  ","
         }
         }
-        console.log(rdata)
+        console.log(rdata + " : "+dataObj)
         resulthtml += '</ul>'
         let getcontent = document.getElementById('content')
         getcontent.innerHTML = resulthtml
@@ -167,7 +168,6 @@
         let fnameDom = document.querySelector('input[name=fname]')
         let lnameDom = document.querySelector('input[name=lname]')
         let ageDom = document.querySelector('input[name=age]')
-
 
         let e = document.getElementById("slect_T");
         let programDom = e.options[e.selectedIndex].text;
@@ -182,11 +182,7 @@
 
         let sexDom = document.querySelector('input[name=sex]:checked')
         let addrDom = document.querySelector('textarea[name=address]')
-        let messageDom = document.getElementById('message')
-
-
-
-
+        let messageresDom = document.getElementById('message')
 
         let userData = {
             Lname: lnameDom.value,
@@ -200,29 +196,85 @@
         
         try{
 
-            console.log('send Data : ',userData)
+            //console.log('send Data : ',userData)
+            
+            const errors = validateData(userData)
+            if(errors.length>0){
+                 throw {
+                     message : 'กรอกข้อมูลไม่ครบ',
+                     errors : errors
+                 }
+                
+            }
+
             const response = await axios.post('http://localhost:8002/user',userData)
             
-            messageDom.innerText = "บันทึกข้อมูลเรียบร้อย"
-            messageDom.className = 'message success'
+            messageresDom.innerText = 'เพิ่มข้อมูลเรียบร้อย !'
+            messageresDom.className = 'message success'
             
-            // console.log('response : ', "  ===>"+response.data.user.fname)
-            let txtmsg = response.data.user.fname 
-                + " " +response.data.user.lname 
-                + " " +response.data.user.adrr 
-                + " " +response.data.user.age
-                + " " +response.data.user.interest
-                + " " +response.data.user.program
-                + " " +response.data.user.sex
-            document.getElementById('resdata').innerHTML = txtmsg
+            // console.log('response : ', "  ===>"+response.message )
+ 
+            //let txtmsg = response.data.info
+            //    + " " +response.data.user.lname 
+            //     + " " +response.data.user.adrr 
+            //     + " " +response.data.user.age
+            //     + " " +response.data.user.interest
+            //     + " " +response.data.user.program
+            //     + " " +response.data.user.sex
+            // document.getElementById('resdata').innerHTML = txtmsg
 
-        }catch(err){
+        }catch(error){
+             
+            //console.log(' ERRR ' , error.message)
+            let messageDOM = `มีปัญหาเกิดขึ้น ${error.message}`
+            if (error.errors && error.errors.length > 0) {
+                messageDOM = '<div>'
+                messageDOM += `<div>${error.message}</div>`
+                messageDOM += '<ul>'
+                for (let i = 0; i < error.errors.length; i++) {
+                    messageDOM += `<li>${error.errors[i]}</li>`
+                }
+                messageDOM += '</ul>'
+                messageDOM += '</div>'
+            }
+            messageresDom.innerHTML = messageDOM
+            messageresDom.className = 'message danger'
 
-            messageDom.innerText = "บันทึกข้อมูลมีปัญหา"
-            messageDom.className = 'message danger'
-
-            
         }
+
+    }
+
+    const validateData =(userData) =>{
+
+ 
+        let errors=[]
+
+        if (!userData.Fname != ""){
+            errors.push('กรุณากรอกชื่อจริง')
+        }
+
+        if (!userData.Lname){
+            errors.push('กรุณากรอกนามสกุล')
+        }
+        if (!userData.Address){
+            errors.push('กรุณากรอกที่อยู่')
+        }
+        if (!userData.Age){
+            errors.push('กรุณากรอกอายุ')
+        }
+        
+        if (userData.Interest.length == 0){
+             errors.push('กรุณากรอกสิ่งที่สนใจ')
+        }
+        
+        if (!userData.Program){
+            errors.push('กรุณากรอกเลือภาษาโปรแกรมที่ชอบ')
+        }
+        if (!userData.Sex){
+            errors.push('กรุณากรอกเลือกเพศ')
+        }
+        
+        return errors
 
     }
 

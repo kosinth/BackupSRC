@@ -34,13 +34,12 @@ app.get(`/${pathparam}`, async(req,res)=>{
         */
         const results = await conn.query('SELECT *,DATE_FORMAT(dt_timestamp, "%d/%m/%Y") AS "dt_name" FROM Register')
         res.json(results[0])
-        //console.log(results)
+        console.log(results[0])
 
-    }catch(err){
+    }catch(error){
         console.error('Error : api path get[/testdb]' ,err.message)
         res.status(500).json({
-            err : 'มีข้อผิดพลาด : ',
-            message : err.message
+            err : 'มีข้อผิดพลาด : ',   
         })
     }
 
@@ -104,7 +103,8 @@ app.post('/user',async(req,res)=>{
             //port : '3306'
         })
         let user = req.body
-        const results = await conn.query('INSERT INTO Register SET ?',user)
+        console.log(req.body)
+        const results = await conn.query('INSERT INTO Register  SET ?',user)
         console.log('result : ',results)
 
         res.json({
@@ -112,12 +112,12 @@ app.post('/user',async(req,res)=>{
             data : results[0]
         })
     
-    }catch(err){
+    }catch(error){
         res.status(500).json({
             error : " error ",
-            message : err.message
+            message : error.message
         })
-        console.error('Error,index.js,path api post[/user] =>',err.message)
+        console.error('Error,index.js,path api post[/user] =>',error.message)
     }
  
 })
