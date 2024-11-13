@@ -195,9 +195,7 @@
         }
         
         try{
-
             //console.log('send Data : ',userData)
-            
             const errors = validateData(userData)
             if(errors.length>0){
                  throw {
@@ -209,7 +207,7 @@
 
             const response = await axios.post('http://localhost:8002/user',userData)
             
-            messageresDom.innerText = 'เพิ่มข้อมูลเรียบร้อย !'
+            messageresDom.innerText = 'บันทึกข้อมูลเรียบร้อย !'
             messageresDom.className = 'message success'
             
             // console.log('response : ', "  ===>"+response.message )
@@ -245,14 +243,11 @@
     }
 
     const validateData =(userData) =>{
-
  
         let errors=[]
-
-        if (!userData.Fname != ""){
+        if (!userData.Fname){
             errors.push('กรุณากรอกชื่อจริง')
         }
-
         if (!userData.Lname){
             errors.push('กรุณากรอกนามสกุล')
         }
@@ -262,18 +257,15 @@
         if (!userData.Age){
             errors.push('กรุณากรอกอายุ')
         }
-        
         if (userData.Interest.length == 0){
              errors.push('กรุณากรอกสิ่งที่สนใจ')
         }
-        
         if (!userData.Program){
             errors.push('กรุณากรอกเลือภาษาโปรแกรมที่ชอบ')
         }
         if (!userData.Sex){
             errors.push('กรุณากรอกเลือกเพศ')
         }
-        
         return errors
 
     }
