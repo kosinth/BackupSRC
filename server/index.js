@@ -31,7 +31,7 @@ app.get(`/${pathparam}`, async(req,res)=>{
         */
         const results = await conn.query('SELECT *,DATE_FORMAT(dt_timestamp, "%d/%m/%Y") AS "dt_name" FROM Register')
         res.json(results[0])
-        console.log(results[0])
+        //console.log(results[0])
         conn.end();
 
     }catch(error){
