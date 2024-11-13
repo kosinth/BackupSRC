@@ -15,17 +15,14 @@ let pathparam = 'testdb-list'
 
 // Get all user
 app.get(`/${pathparam}`, async(req,res)=>{
-    //MySql connect 
-    //User Name ; Root 
-    //Pasword ; Kosinth@1001
+
     try{
-        const conn = await mysql.createConnection({
-        host : 'localhost',
-        user : 'root',
-        password : 'Kosinth@1001',
-        database : connDb
-        //port : '3306'
-        })
+        const conn =  await mysql.createConnection({
+            host : 'localhost',
+            user : 'root',
+            password : 'Kosinth@1001',
+            database : connDb
+        });
         //concat field
         //const results = await conn.query('select concat(lname,"|",fname) as prodtname from Register')
 
@@ -35,9 +32,10 @@ app.get(`/${pathparam}`, async(req,res)=>{
         const results = await conn.query('SELECT *,DATE_FORMAT(dt_timestamp, "%d/%m/%Y") AS "dt_name" FROM Register')
         res.json(results[0])
         console.log(results[0])
+        conn.end();
 
     }catch(error){
-        console.error('Error : api path get[/testdb]' ,err.message)
+        console.error('Error : api path get[/testdb-list]' ,error.message)
         res.status(500).json({
             err : 'มีข้อผิดพลาด : ',   
         })
@@ -59,6 +57,7 @@ app.get('/user/:id',async(req,res) =>{
         })
         const results = await conn.query('SELECT * FROM  Register WHERE ID = ?',id)
         //console.log('result : ',results[0].length)
+        conn.end();
         if (results[0].length>0){
             res.json({ 
                 user : 'Get ID Ok',
@@ -94,23 +93,26 @@ app.get('/user/:id/:name',(req,res) =>{
 
 // Insert
 app.post('/user',async(req,res)=>{
+    
     try{
-        const conn = await mysql.createConnection({
-            host : 'localhost',
-            user : 'root',
-            password : 'Kosinth@1001',
-            database : connDb
-            //port : '3306'
-        })
-        let user = req.body
-        console.log(req.body)
-        const results = await conn.query('INSERT INTO Register  SET ?',user)
-        console.log('result : ',results)
+           let user = req.body
+            console.log(req.body)
 
-        res.json({
-            user : 'insert Ok',
-            data : results[0]
-        })
+            const conn =  await mysql.createConnection({
+                host : 'localhost',
+                user : 'root',
+                password : 'Kosinth@1001',
+                database : connDb
+            });
+
+            const results = await conn.query('INSERT INTO Register  SET ?',user)
+            console.log('result : ',results)
+            // Close the connection
+            conn.end();
+            res.json({
+                user : 'insert Ok',
+                data : results[0]
+            })
     
     }catch(error){
         res.status(500).json({
@@ -139,6 +141,7 @@ app.put('/user/:id',async(req,res)=>{
             'UPDATE Register SET ? WHERE id = ? ',
             [updateUser,id]
         )
+        conn.end();
         console.log('result : ',results)
 
         res.json({
@@ -168,6 +171,7 @@ app.delete('/user/:id',async(req,res)=>{
             //port : '3306'
         })
         const results = await conn.query('DELETE FROM Register WHERE ID = ?',id)
+        conn.end();
         //console.log('result : ',results[0].length)
         res.json({
             user : 'delete Ok',
