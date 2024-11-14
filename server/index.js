@@ -32,12 +32,12 @@ app.get(`/${pathparam}`, async(req,res)=>{
             db.end();
 
         }catch(error){
-            db.end();
             console.error('Error : api path get[/testdb-list]' ,error.message)
             res.status(500).json({
                 err : 'มีข้อผิดพลาด : ',
                 msg : error.message   
             })
+            db.end();
         }
     }else{
         res.status(500).json({
@@ -109,19 +109,20 @@ app.post('/user',async(req,res)=>{
             const results = await db.query('INSERT INTO Register  SET ?',user)
             //console.log('result : ',results)
             // Close the connection
-            db.end();
              res.json({
                  user : 'insert Ok',
                  data : results[0]
              })
+             db.end();
         
         }catch(error){
-            db.end();
+           
             res.status(500).json({
                 err : ' มีข้อผิดพลาด ',
                 msg : error.message
             })
             console.error('Error,index.js,path api post[/user] =>',error.message)
+            db.end();
         }
     }else{
         res.status(500).json({
