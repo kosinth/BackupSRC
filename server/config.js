@@ -9,8 +9,18 @@ const connect = async function (dbName) {
                      host : 'localhost',
                      user : 'root',
                      password : 'Kosinth@1001',
-                     database : dbName
-                     //port : '3306'
+                     database : dbName,
+                     port:3306,
+                     insecureAuth: true,
+                     multipleStatements: true,
+                     pool: {
+                         max: 10,
+                         min: 0,
+                         acquire: 30000,
+                         idle: 10000
+                     }
+
+
         })
         // if (connection){
         //     return connection;

@@ -20,18 +20,8 @@ app.get(`/${pathparam}`, async(req,res)=>{
     const db = await conn('TestDB');
     //console.log('DB++>' ,db  )
     if(db){
-        
-        //console.log(' HIIII')
-        // const conn =  await mysql.createConnection({
-        //     host : 'localhost',
-        //     user : 'root',
-        //     password : 'Kosinth@1001',
-        //     database : connDb
-        // });
-        
         //concat field
         //const results = await conn.query('select concat(lname,"|",fname) as prodtname from Register')
-
         /*  Select Date Now  ---> current date
            const results = await conn.query('SELECT  DATE_FORMAT(NOW(), "%d/%m/%Y") AS "dt_now" ')
         */
@@ -113,13 +103,6 @@ app.post('/user',async(req,res)=>{
     
     let user = req.body
     //console.log(req.body)
-
-    // const conn =  await mysql.createConnection({
-    //     host : 'localhost',
-    //     user : 'root',
-    //     password : 'Kosinth@1001',
-    //     database : connDb
-    // });
     const db = await conn('TestDB');
     if(db){
         try{
