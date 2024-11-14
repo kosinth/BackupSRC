@@ -3,6 +3,7 @@ const app = express()
 const bodyparser = require('body-parser')
 const mysql = require('mysql2/promise')
 const cors = require('cors');
+const conn = require('server/config');
 //app use port
 const port = 8002
 
@@ -15,29 +16,43 @@ let pathparam = 'testdb-list'
 
 // Get all user
 app.get(`/${pathparam}`, async(req,res)=>{
-
-    try{
-        const conn =  await mysql.createConnection({
-            host : 'localhost',
-            user : 'root',
-            password : 'Kosinth@1001',
-            database : connDb
-        });
+     
+    const db = await conn('TestDB');
+    //console.log('DB++>' ,db  )
+    if(db){
+        
+        //console.log(' HIIII')
+        // const conn =  await mysql.createConnection({
+        //     host : 'localhost',
+        //     user : 'root',
+        //     password : 'Kosinth@1001',
+        //     database : connDb
+        // });
+        
         //concat field
         //const results = await conn.query('select concat(lname,"|",fname) as prodtname from Register')
 
         /*  Select Date Now  ---> current date
            const results = await conn.query('SELECT  DATE_FORMAT(NOW(), "%d/%m/%Y") AS "dt_now" ')
         */
-        const results = await conn.query('SELECT *,DATE_FORMAT(dt_timestamp, "%d/%m/%Y") AS "dt_name" FROM Register')
-        res.json(results[0])
-        //console.log(results[0])
-        conn.end();
+        try{
+            const results = await db.query('SELECT *,DATE_FORMAT(dt_timestamp, "%d/%m/%Y") AS "dt_name" FROM Register')
+            res.json(results[0])
+            //console.log(results[0])
+            db.end();
 
-    }catch(error){
-        console.error('Error : api path get[/testdb-list]' ,error.message)
+        }catch(error){
+            db.end();
+            console.error('Error : api path get[/testdb-list]' ,error.message)
+            res.status(500).json({
+                err : 'มีข้อผิดพลาด : ',
+                msg : error.message   
+            })
+        }
+    }else{
         res.status(500).json({
-            err : 'มีข้อผิดพลาด : ',   
+            err : 'มีข้อผิดพลาด : ',
+            msg : 'Connection to Database fail ---> Error Access denied'   
         })
     }
 
@@ -46,7 +61,7 @@ app.get(`/${pathparam}`, async(req,res)=>{
 // Get by id
 app.get('/user/:id',async(req,res) =>{
         
-    try{
+    
         let id = req.params.id
         const conn = await mysql.createConnection({
             host : 'localhost',
@@ -55,6 +70,7 @@ app.get('/user/:id',async(req,res) =>{
             database : connDb
             //port : '3306'
         })
+        try{
         const results = await conn.query('SELECT * FROM  Register WHERE ID = ?',id)
         //console.log('result : ',results[0].length)
         conn.end();
@@ -71,10 +87,11 @@ app.get('/user/:id',async(req,res) =>{
         }
 
     
-    }catch(err){
+    }catch(error){
+        conn.end();
         res.status(500).json({
-            error : " error ",
-            message : err.message
+            err : ' มีข้อผิดพลาด ',
+            msg : error.message
         })
         console.error('Error,index.js,path api get[/user/:id] =>',err.message)
     }
@@ -94,49 +111,59 @@ app.get('/user/:id/:name',(req,res) =>{
 // Insert
 app.post('/user',async(req,res)=>{
     
-    try{
-           let user = req.body
-            console.log(req.body)
+    let user = req.body
+    //console.log(req.body)
 
-            const conn =  await mysql.createConnection({
-                host : 'localhost',
-                user : 'root',
-                password : 'Kosinth@1001',
-                database : connDb
-            });
-
-            const results = await conn.query('INSERT INTO Register  SET ?',user)
-            console.log('result : ',results)
+    // const conn =  await mysql.createConnection({
+    //     host : 'localhost',
+    //     user : 'root',
+    //     password : 'Kosinth@1001',
+    //     database : connDb
+    // });
+    const db = await conn('TestDB');
+    if(db){
+        try{
+            const results = await db.query('INSERT INTO Register  SET ?',user)
+            //console.log('result : ',results)
             // Close the connection
-            conn.end();
-            res.json({
-                user : 'insert Ok',
-                data : results[0]
+            db.end();
+             res.json({
+                 user : 'insert Ok',
+                 data : results[0]
+             })
+        
+        }catch(error){
+            db.end();
+            res.status(500).json({
+                err : ' มีข้อผิดพลาด ',
+                msg : error.message
             })
-    
-    }catch(error){
+            console.error('Error,index.js,path api post[/user] =>',error.message)
+        }
+    }else{
         res.status(500).json({
-            error : " error ",
-            message : error.message
+            err : 'มีข้อผิดพลาด : ',
+            msg : 'Connection to Database fail ---> Error Access denied'   
         })
-        console.error('Error,index.js,path api post[/user] =>',error.message)
-    }
+    }    
  
 })
 
 //Update
 app.put('/user/:id',async(req,res)=>{
+    
+    let id = req.params.id
+    let updateUser = req.body
+    const conn = await mysql.createConnection({
+        host : 'localhost',
+        user : 'root',
+        password : 'Kosinth@1001',
+        database : connDb
+        //port : '3306'
+    })
+    
     try{
-        let id = req.params.id
-        let updateUser = req.body
-        const conn = await mysql.createConnection({
-            host : 'localhost',
-            user : 'root',
-            password : 'Kosinth@1001',
-            database : connDb
-            //port : '3306'
-        })
-        let user = req.body
+        //let user = req.body
         const results = await conn.query(
             'UPDATE Register SET ? WHERE id = ? ',
             [updateUser,id]
@@ -149,27 +176,29 @@ app.put('/user/:id',async(req,res)=>{
             data : results[0]
         })
     
-    }catch(err){
+    }catch(error){
+        conn.end();
         res.status(500).json({
-            error : " error ",
-            message : err.message
+            err : ' มีข้อผิดพลาด ',
+            msg : error.message
         })
-        console.error('Error,index.js,path api put[/user/:id] =>',err.message)
+        console.error('Error,index.js,path api put[/user/:id] =>',error.message)
     }
 })
     
 // Delete
 app.delete('/user/:id',async(req,res)=>{
-
+    
+    let id = req.params.id
+    const conn = await mysql.createConnection({
+        host : 'localhost',
+        user : 'root',
+        password : 'Kosinth@1001',
+        database : connDb
+        //port : '3306'
+    })
+     
     try{
-        let id = req.params.id
-        const conn = await mysql.createConnection({
-            host : 'localhost',
-            user : 'root',
-            password : 'Kosinth@1001',
-            database : connDb
-            //port : '3306'
-        })
         const results = await conn.query('DELETE FROM Register WHERE ID = ?',id)
         conn.end();
         //console.log('result : ',results[0].length)
@@ -178,12 +207,13 @@ app.delete('/user/:id',async(req,res)=>{
             data : results[0]
         })
     
-    }catch(err){
+    }catch(error){
+        conn.end();
         res.status(500).json({
-            error : " error ",
-            message : err.message
+            err : ' มีข้อผิดพลาด ',
+            msg : error.message
         })
-        console.error('Error,index.js,path api delete[/user/:id] =>',err.message)
+        console.error('Error,index.js,path api delete[/user/:id] =>',error.message)
     }
 
 })

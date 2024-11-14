@@ -1,5 +1,6 @@
-    window.onload = async ()=>{
 
+window.onload = async ()=>{
+    let errmsg = document.getElementById('errMsg')
     console.log('on Load')
     try{
         const response = await axios.get('http://localhost:8002/testdb-list')
@@ -31,8 +32,8 @@
                 htmlData += `<td>${user.Program}</td>`
                 htmlData += `<td>${user.Interest}</td>`
                 htmlData += `<td>${user.Address}</td>`
-                htmlData += `<td> <button type="button"> Edit</button> </td>`
-                htmlData += `<td> <button type="button"> Delete</button> </td>`
+                htmlData += '<td> <button type="button"> Edit</button> </td>'
+                htmlData += '<td> <button type="button"> Delete</button> </td>'
                 htmlData += ' </tr>'
 
         }
@@ -40,7 +41,11 @@
         htmlData += '</div>'
         userDom.innerHTML = htmlData
     }catch(err){
-        console.log(err.message)
+        if(err.response){
+            console.log(err.response.data.message)
+            errmsg.innerText = err.response.data.err + " " +err.response.data.msg
+            errmsg.style.color = "red"
+        }
     }
 
 }
