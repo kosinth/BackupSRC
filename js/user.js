@@ -37,7 +37,8 @@ const loadData = async() =>{
                 htmlData += `<td>${user.Program}</td>`
                 htmlData += `<td>${user.Interest}</td>`
                 htmlData += `<td>${user.Address}</td>`
-                htmlData += '<td> <button> Edit</button> </td>'
+                //htmlData += `<td> <button class ='edit' data-edit='${EDIT} ${user.Id}'> Edit</button> </td>`
+                htmlData += `<td> <button class='edit' data-id='${'EDIT'},${user.Id}'> Edit</button> </td>`
                 htmlData += `<td> <button class='delete' data-id='${user.Id}'> Delete</button> </td>`
                 htmlData += ' </tr>'
 
@@ -65,6 +66,13 @@ const loadData = async() =>{
             })
         }
 
+        const editDom = document.getElementsByClassName('edit')
+        for(let j=0;j<editDom.length;j++){
+            editDom[j].addEventListener('click',async(event)=>{
+                const editId = await event.target.dataset.id
+                console.log('EDIT -->',editId)
+            })
+        }
 
     }catch(err){
         if(err.response){
