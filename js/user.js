@@ -1,5 +1,10 @@
 
 window.onload = async ()=>{
+    await loadData()
+}
+
+const loadData = async() =>{
+
     let errmsg = document.getElementById('errMsg')
     console.log('on Load')
     try{
@@ -32,14 +37,35 @@ window.onload = async ()=>{
                 htmlData += `<td>${user.Program}</td>`
                 htmlData += `<td>${user.Interest}</td>`
                 htmlData += `<td>${user.Address}</td>`
-                htmlData += '<td> <button type="button"> Edit</button> </td>'
-                htmlData += '<td> <button type="button"> Delete</button> </td>'
+                htmlData += '<td> <button> Edit</button> </td>'
+                htmlData += `<td> <button class='delete' data-id='${user.Id}'> Delete</button> </td>`
                 htmlData += ' </tr>'
 
         }
         htmlData += '</table>'
         htmlData += '</div>'
         userDom.innerHTML = htmlData
+
+        const deleteDom = document.getElementsByClassName('delete')
+        for(let i =0;i<deleteDom.length;i++){
+            deleteDom[i].addEventListener('click',async(event)=>{
+                const id = event.target.dataset.id
+                //alert(id)
+                //api app.delete('/user/:id',async(req,res)=>{
+                console.log('ID -->',id)
+                try{
+                    await axios.delete(`http://localhost:8002/user/${id}`)
+                    console.log('Delete success...')
+                    loadData()
+                }catch(err){
+                    console.log('Error: ',err.message)            
+
+                }
+
+            })
+        }
+
+
     }catch(err){
         if(err.response){
             console.log(err.response.data.message)
@@ -48,4 +74,10 @@ window.onload = async ()=>{
         }
     }
 
+
 }
+
+
+
+
+

@@ -3,13 +3,16 @@ const app = express()
 const bodyparser = require('body-parser')
 const mysql = require('mysql2/promise')
 const cors = require('cors');
+const morgan = require('morgan')
 const conn = require('server/config');
+
+
 //app use port
 const port = 8002
 
 app.use(bodyparser.json())
 app.use(cors())
-
+app.use(morgan('tiny'));
 // get mysql DB
 let connDb = 'TestDB';
 let pathparam = 'testdb-list'
@@ -19,6 +22,7 @@ app.get(`/${pathparam}`, async(req,res)=>{
      
     const db = await conn('TestDB');
     //console.log('DB++>' ,db  )
+
     if(db){
         //concat field
         //const results = await conn.query('select concat(lname,"|",fname) as prodtname from Register')
@@ -202,8 +206,11 @@ app.delete('/user/:id',async(req,res)=>{
 
 })
 
+
 //----> app running <----//
 app.listen(port,(req,res) =>{
     console.log(`server is running port ${port}`)
 })
+
+
 
