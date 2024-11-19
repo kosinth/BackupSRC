@@ -37,7 +37,6 @@ const loadData = async() =>{
                 htmlData += `<td>${user.Program}</td>`
                 htmlData += `<td>${user.Interest}</td>`
                 htmlData += `<td>${user.Address}</td>`
-                //htmlData += `<td> <button class ='edit' data-edit='${EDIT} ${user.Id}'> Edit</button> </td>`
                 htmlData += `<td> <button class='edit' data-id='${'EDIT'},${user.Id}'> Edit</button> </td>`
                 htmlData += `<td> <button class='delete' data-id='${user.Id}'> Delete</button> </td>`
                 htmlData += ' </tr>'
@@ -48,28 +47,48 @@ const loadData = async() =>{
         userDom.innerHTML = htmlData
 
         const deleteDom = document.getElementsByClassName('delete')
+        let id=''
         for(let i =0;i<deleteDom.length;i++){
-            deleteDom[i].addEventListener('click',async(event)=>{
-                const id = event.target.dataset.id
+            deleteDom[i].addEventListener('click',(event)=>{
+                id = event.target.dataset.id
                 //alert(id)
                 //api app.delete('/user/:id',async(req,res)=>{
                 console.log('ID -->',id)
                 try{
-                    await axios.delete(`http://localhost:8002/user/${id}`)
-                    console.log('Delete success...')
-                    loadData()
+                
+                    Swal.fire({
+                        title: 'ลบข้อมูล',
+                        text: `ต้องการลบข้อมูล...? ${id}` ,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33', 
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'ลบ',
+                        cancelButtonText: 'ยกเลิก',  
+                    }).then(async(result) => {
+                        if (result.isConfirmed) {
+                            await axios.delete(`http://localhost:8002/user/${id}`)
+                            console.log('Delete success...')
+                            loadData()
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    })
+                
                 }catch(err){
                     console.log('Error: ',err.message)            
-
                 }
 
             })
         }
 
         const editDom = document.getElementsByClassName('edit')
+        let editId =''
         for(let j=0;j<editDom.length;j++){
-            editDom[j].addEventListener('click',async(event)=>{
-                const editId = await event.target.dataset.id
+            editDom[j].addEventListener('click',(event)=>{
+                 editId =  event.target.dataset.id
                 console.log('EDIT -->',editId)
             })
         }
@@ -78,7 +97,7 @@ const loadData = async() =>{
         if(err.response){
             console.log(err.response.data.message)
             errmsg.innerText = err.response.data.err + " " +err.response.data.msg
-            errmsg.style.color = "red"
+            errmsg.style.color = 'red'
         }
     }
 
