@@ -37,7 +37,7 @@ const loadData = async() =>{
                 htmlData += `<td>${user.Program}</td>`
                 htmlData += `<td>${user.Interest}</td>`
                 htmlData += `<td>${user.Address}</td>`
-                htmlData += `<td> <button class='edit' data-id='${'EDIT'},${user.Id}'> Edit</button> </td>`
+                htmlData += `<td> <button class='edit' data-id='${'EDIT'} ${user.Id}'> Edit</button> </td>`
                 htmlData += `<td> <button class='delete' data-id='${user.Id}'> Delete</button> </td>`
                 htmlData += ' </tr>'
 
@@ -63,7 +63,7 @@ const loadData = async() =>{
                         showCancelButton: true,
                         confirmButtonColor: '#d33', 
                         cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'ลบ',
+                        confirmButtonText: ' ลบ ',
                         cancelButtonText: 'ยกเลิก',  
                     }).then(async(result) => {
                         if (result.isConfirmed) {
@@ -88,8 +88,9 @@ const loadData = async() =>{
         let editId =''
         for(let j=0;j<editDom.length;j++){
             editDom[j].addEventListener('click',(event)=>{
-                 editId =  event.target.dataset.id
-                console.log('EDIT -->',editId)
+                editId =  event.target.dataset.id
+                const arrEdtId = editId.split(" ")
+                console.log('EDIT -->',arrEdtId[0] + "  " + arrEdtId[1])
             })
         }
 
