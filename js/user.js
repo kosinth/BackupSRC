@@ -38,7 +38,7 @@ const loadData = async() =>{
                 htmlData += `<td>${user.Interest}</td>`
                 htmlData += `<td>${user.Address}</td>`
                 //htmlData += `<td> <button class='edit' data-id='${'EDIT'} ${user.Id}'> Edit</button> </td>`
-                htmlData += `<td> <button class='edit' data-id='${'EDIT'} ${user.Id}'> Edit</button> </td>`
+                htmlData += `<td> <a href='register.html?id=${user.Id}'> <button >Edit </button> </a> </td>`
                 htmlData += `<td> <button class='delete' data-id='${user.Id}^${user.Fname}'> Delete</button> </td>`
                 htmlData += ' </tr>'
 

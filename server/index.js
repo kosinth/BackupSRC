@@ -54,8 +54,7 @@ app.get(`/${pathparam}`, async(req,res)=>{
 
 // Get by id
 app.get('/user/:id',async(req,res) =>{
-        
-    
+   
         let id = req.params.id
         const conn = await mysql.createConnection({
             host : 'localhost',
@@ -67,7 +66,6 @@ app.get('/user/:id',async(req,res) =>{
         try{
         const results = await conn.query('SELECT * FROM  Register WHERE ID = ?',id)
         //console.log('result : ',results[0].length)
-        conn.end();
         if (results[0].length>0){
             res.json({ 
                 user : 'Get ID Ok',
@@ -79,14 +77,14 @@ app.get('/user/:id',async(req,res) =>{
                 data : results[0]
             })
         }
-
+        conn.end();
     
     }catch(error){
-        conn.end();
         res.status(500).json({
             err : ' มีข้อผิดพลาด ',
             msg : error.message
         })
+        conn.end();
         console.error('Error,index.js,path api get[/user/:id] =>',err.message)
     }
 })
@@ -156,20 +154,19 @@ app.put('/user/:id',async(req,res)=>{
             'UPDATE Register SET ? WHERE id = ? ',
             [updateUser,id]
         )
-        conn.end();
-        console.log('result : ',results)
-
+        //console.log('result : ',results)
         res.json({
             user : 'update Ok',
             data : results[0]
         })
+        conn.end();
     
     }catch(error){
-        conn.end();
         res.status(500).json({
             err : ' มีข้อผิดพลาด ',
             msg : error.message
         })
+        conn.end();
         console.error('Error,index.js,path api put[/user/:id] =>',error.message)
     }
 })
@@ -188,19 +185,19 @@ app.delete('/user/:id',async(req,res)=>{
      
     try{
         const results = await conn.query('DELETE FROM Register WHERE ID = ?',id)
-        conn.end();
         //console.log('result : ',results[0].length)
         res.json({
             user : 'delete Ok',
             data : results[0]
         })
+        conn.end();
     
     }catch(error){
-        conn.end();
         res.status(500).json({
             err : ' มีข้อผิดพลาด ',
             msg : error.message
         })
+        conn.end();
         console.error('Error,index.js,path api delete[/user/:id] =>',error.message)
     }
 
