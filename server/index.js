@@ -123,8 +123,8 @@ app.post('/user',async(req,res)=>{
                 err : ' มีข้อผิดพลาด ',
                 msg : error.message
             })
-            console.error('Error,index.js,path api post[/user] =>',error.message)
             db.end();
+            console.error('Error,index.js,path api post[/user] =>',error.message)
         }
     }else{
         res.status(500).json({
