@@ -212,7 +212,6 @@
                 const response = await axios.post('http://localhost:8002/user',userData)
 
             }else{
-                //app.put('/user/:id',async(req,res)=>{
                 const response = await axios.put(`http://localhost:8002/user/${selectedId}`,userData)
                 msg = 'แก้ไขข้อมูลเรียบร้อย !'
             }

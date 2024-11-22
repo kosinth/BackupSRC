@@ -59,13 +59,9 @@ window.onload = async ()=>{
 
         }catch(err){
             console.log(err.message)
-
         }
-
 
     }   
     
     //alert(mode +" " +selectedId)
 }
-
-
