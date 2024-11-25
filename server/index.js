@@ -55,7 +55,6 @@ app.get(`/${pathparam}`, async(req,res)=>{
 // Get by id
  //app.get('/user/:id',async(req,res) =>{
 app.get('/user/:id',async(req,res) =>{
-   
 
     let id = req.params.id
     const db = await conn('TestDB');
