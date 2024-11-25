@@ -53,40 +53,44 @@ app.get(`/${pathparam}`, async(req,res)=>{
 })
 
 // Get by id
+ //app.get('/user/:id',async(req,res) =>{
 app.get('/user/:id',async(req,res) =>{
    
         let id = req.params.id
-        const conn = await mysql.createConnection({
-            host : 'localhost',
-            user : 'root',
-            password : 'Kosinth@1001',
-            database : connDb
-            //port : '3306'
-        })
-        try{
-        const results = await conn.query('SELECT * FROM  Register WHERE ID = ?',id)
-        //console.log('result : ',results[0].length)
-        if (results[0].length>0){
-            res.json({ 
-                user : 'Get ID Ok',
-                data : results[0]
-            })
-        }else{
-            res.status(404).json({ 
-                user : 'ไม่พบข่อมูล..',
-                data : results[0]
-            })
-        }
-        conn.end();
+        const db = await conn('TestDB');
+        if(db){
+
+            try{
+                const results = await db.query('SELECT * FROM  Register WHERE ID = ?',id)
+                //console.log('result : ',results[0].length)
+                if (results[0].length>0){
+                    res.json({ 
+                        user : 'Get ID Ok',
+                        data : results[0]
+                    })
+                }else{
+                    res.status(404).json({ 
+                        user : 'ไม่พบข่อมูล..',
+                        data : results[0]
+                    })
+                }
+                db.end();
+        
+            }catch(error){
+                res.status(500).json({
+                    err : ' มีข้อผิดพลาด ',
+                    msg : error.message
+                })
+                db.end();
+                console.error('Error,index.js,path api get[/user/:id] =>',err.message)
+            }
     
-    }catch(error){
-        res.status(500).json({
-            err : ' มีข้อผิดพลาด ',
-            msg : error.message
-        })
-        conn.end();
-        console.error('Error,index.js,path api get[/user/:id] =>',err.message)
-    }
+        }else{
+            res.status(500).json({
+                err : 'มีข้อผิดพลาด : ',
+                msg : 'Connection to Database fail ---> Error Access denied'   
+            })
+        }   
 })
 
 app.get('/user/:id/:name',(req,res) =>{
@@ -140,66 +144,73 @@ app.put('/user/:id',async(req,res)=>{
     
     let id = req.params.id
     let updateUser = req.body
-    const conn = await mysql.createConnection({
-        host : 'localhost',
-        user : 'root',
-        password : 'Kosinth@1001',
-        database : connDb
-        //port : '3306'
-    })
     
-    try{
-        //let user = req.body
-        const results = await conn.query(
-            'UPDATE Register SET ? WHERE id = ? ',
-            [updateUser,id]
-        )
-        //console.log('result : ',results)
-        res.json({
-            user : 'update Ok',
-            data : results[0]
-        })
-        conn.end();
+    const db = await conn('TestDB');
+    if(db){
     
-    }catch(error){
+        try{
+            //let user = req.body
+            const results = await db.query(
+                'UPDATE Register SET ? WHERE id = ? ',
+                [updateUser,id]
+            )
+            //console.log('result : ',results)
+            res.json({
+                user : 'update Ok',
+                data : results[0]
+            })
+            db.end();
+        
+        }catch(error){
+            res.status(500).json({
+                err : ' มีข้อผิดพลาด ',
+                msg : error.message
+            })
+            db.end();
+            console.error('Error,index.js,path api put[/user/:id] =>',error.message)
+        }
+
+    }else{
         res.status(500).json({
-            err : ' มีข้อผิดพลาด ',
-            msg : error.message
+            err : 'มีข้อผิดพลาด : ',
+            msg : 'Connection to Database fail ---> Error Access denied'   
         })
-        conn.end();
-        console.error('Error,index.js,path api put[/user/:id] =>',error.message)
-    }
+    }    
+
+    
 })
     
 // Delete
 app.delete('/user/:id',async(req,res)=>{
     
     let id = req.params.id
-    const conn = await mysql.createConnection({
-        host : 'localhost',
-        user : 'root',
-        password : 'Kosinth@1001',
-        database : connDb
-        //port : '3306'
-    })
+    const db = await conn('TestDB');
+    if(db){
      
-    try{
-        const results = await conn.query('DELETE FROM Register WHERE ID = ?',id)
-        //console.log('result : ',results[0].length)
-        res.json({
-            user : 'delete Ok',
-            data : results[0]
-        })
-        conn.end();
-    
-    }catch(error){
+        try{
+            const results = await db.query('DELETE FROM Register WHERE ID = ?',id)
+            //console.log('result : ',results[0].length)
+            res.json({
+                user : 'delete Ok',
+                data : results[0]
+            })
+            db.end();
+        
+        }catch(error){
+            res.status(500).json({
+                err : ' มีข้อผิดพลาด ',
+                msg : error.message
+            })
+            db.end();
+            console.error('Error,index.js,path api delete[/user/:id] =>',error.message)
+        }
+
+    }else{
         res.status(500).json({
-            err : ' มีข้อผิดพลาด ',
-            msg : error.message
+        err : 'มีข้อผิดพลาด : ',
+        msg : 'Connection to Database fail ---> Error Access denied'   
         })
-        conn.end();
-        console.error('Error,index.js,path api delete[/user/:id] =>',error.message)
-    }
+    } 
 
 })
 
